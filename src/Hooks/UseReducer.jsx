@@ -3,16 +3,29 @@ import { useReducer, useState } from "react";
 
 const UseReducer = () => {
   function reducer(state, action) {
-    switch(action.type) {
+    switch (action.type) {
       case "add-todo":
         return {
-          todos: [...state.todos,{ Name: action.text, completed: false }]
-        }
+          todos: [...state.todos, { Name: action.text, completed: false }],
+        };
 
-        case "delete-todo":
-          return {
-            todos: state.todos.filter((todo, index)=> index !== action.index)
-          }
+      case "done-todo":
+        return {
+          todos: state.todos.map((todo, index) => {
+            if (index === action.index) {
+              return {
+                ...todo,
+                completed: !todo.completed,
+              };
+            }
+            return todo;
+          }),
+        };
+
+      case "delete-todo":
+        return {
+          todos: state.todos.filter((todo, index) => index !== action.index),
+        };
 
       default:
         return state;
@@ -43,11 +56,24 @@ const UseReducer = () => {
         />
       </form>
 
-      {todos.map((todo, index)=> {
-        return <div key={index}>
-          <h1>{todo.Name}</h1>
-          <button onClick={()=> dispatch({type: "delete-todo", index})}>Delete</button>
-        </div>
+      {todos.map((todo, index) => {
+        return (
+          <div key={index}>
+            <h1
+              style={{
+                textDecoration: todo.completed ? "line-through" : "",
+              }}
+            >
+              {todo.Name}
+            </h1>
+            <button onClick={() => dispatch({ type: "delete-todo", index })}>
+              Delete
+            </button>
+            <button onClick={() => dispatch({ type: "done-todo", index })}>
+              {todo.completed ? "Undo" : "Done"}
+            </button>
+          </div>
+        );
       })}
     </div>
   );
