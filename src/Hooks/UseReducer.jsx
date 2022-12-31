@@ -1,35 +1,55 @@
 import React from "react";
-import { useReducer } from "react";
-
-const reducer = (state, action)=>{
-    switch (action.type){
-        case "INCREMENT":
-            return {count: state.count+1, showText: state.showText}
-        case "ToggleText":
-            return {count: state.count, showText: !state.showText}
-        default:
-            return state
-    }
-}
+import { useReducer, useState } from "react";
 
 const UseReducer = () => {
-    // use Reducer Syntax
-    const [state, dispatch] = useReducer(reducer, {
-        count: 0,
-        showText: true
-    }) // reducer function & initital state
+  function reducer(state, action) {
+    switch(action.type) {
+      case "add-todo":
+        return {
+          todos: [...state.todos,{ Name: action.text, completed: false }]
+        }
 
+        case "delete-todo":
+          return {
+            todos: state.todos.filter((todo, index)=> index !== action.index)
+          }
+
+      default:
+        return state;
+    }
+  }
+
+  const [{ todos, todoCount }, dispatch] = useReducer(reducer, {
+    todos: [],
+    todoCount: 0,
+  });
+
+  const [text, setText] = useState();
 
   return (
-    <>
-      <h1>All about useReducer Hook</h1>
-      <h2>{state.count}</h2>
-      <button onClick={()=>{
-        dispatch({type: "INCREMENT"})
-        dispatch({type: "ToggleText"})
-      }}>Increment Counter</button>
-      {state.showText && <p>This is the text</p>}
-    </>
+    <div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          dispatch({ type: "add-todo", text });
+          setText("");
+        }}
+      >
+        <input
+          type="text"
+          placeholder="Enter text"
+          onChange={(e) => setText(e.target.value)}
+          value={text}
+        />
+      </form>
+
+      {todos.map((todo, index)=> {
+        return <div key={index}>
+          <h1>{todo.Name}</h1>
+          <button onClick={()=> dispatch({type: "delete-todo", index})}>Delete</button>
+        </div>
+      })}
+    </div>
   );
 };
 

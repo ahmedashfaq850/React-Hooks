@@ -1,22 +1,23 @@
-import React from 'react'
-import { useRef } from 'react'
+import React from "react";
+import { useState, useRef } from "react";
+
 const UseReff = () => {
-    const inputReff = useRef(null)
-    let name;
+  const [input, setInput] = useState("");
+  const inputRef = useRef();
 
-    const onChange=()=>{
-        name = inputReff.current.value
-        console.log(name)
-    }
+  function focus (){
+    inputRef.current.focus()
+  }
+
+
   return (
-    <>
-        <h1>All about useRef Hook</h1>
-        <h2>{}</h2>
-        <input type='text' placeholder='Enter Name' ref={inputReff}/>
-        <button onClick={onChange}>Change Name</button>
+    <div>
+      <div>UseReff</div>
+      <input ref={inputRef} type='text' value={input} onChange={(e)=> setInput(e.target.value)} placeholder="enter name" />
+      <h1>My name is: {input}</h1>
+      <button onClick={focus}>focus</button>
+    </div>
+  );
+};
 
-    </>
-  )
-}
-
-export default UseReff
+export default UseReff;
